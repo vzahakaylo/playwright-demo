@@ -6,7 +6,7 @@ const {webkit, chromium, firefox} = require('playwright');
    const page = await browser.newPage();
    await page.goto('https://google.com');
    await page.screenshot({
-     path: `screen-${browserType.name()}.png`,
+     path: `screenshot-${browserType.name()}.png`,
    });
    await browser.close();
    console.log('success: ' + browserType.name());	
