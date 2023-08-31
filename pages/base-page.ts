@@ -12,4 +12,8 @@ export default class BasePage {
       "/"
     );
   }
+
+  async getSuccessToastText() {
+    return await this.page.getByTestId('nb-notification-box').innerText();
+  }
 }
