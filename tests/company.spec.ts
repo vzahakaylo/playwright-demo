@@ -1,46 +1,38 @@
-import { test, expect } from "@playwright/test";
-import LoginPage from "../pages/login-page";
-import CompanyPage from "../pages/company-page";
-import CompanySearchPage from "../pages/company-search-page";
-import EditCompanyPage from "../pages/edit-company-page";
+import { expect } from "@playwright/test";
+import { test } from "../base";
 
 const companyName = "company100000";
 const companyId = "100000";
 
-test.beforeEach(async ({ page }, testInfo) => {
-  const loginPage = new LoginPage(page);
-
-  await loginPage.visit();
-  await loginPage.login("*******", "*******");
+test.beforeEach(async ({ app }, testInfo) => {
+  await app.loginPage.visit();
+  await app.loginPage.login("*******", "*******");
 });
 
-test("should search company", async ({ page }) => {
-  const companySearchPage = new CompanySearchPage(page);
-  await companySearchPage.navigateToCompanies();
-  await companySearchPage.searchForCompany(companyName);
+test("should search company", async ({ app }) => {
+  await app.companySearchPage.navigateToCompanies();
+  await app.companySearchPage.searchForCompany(companyName);
 
   const companyNameInSearchResult =
-    await companySearchPage.getCompanySearchResultCompanyName(0);
+    await app.companySearchPage.getCompanySearchResultCompanyName(0);
   expect(companyNameInSearchResult).toEqual(companyName);
 });
 
-test("should update company", async ({ page }) => {
+test("should update company", async ({ app }) => {
   const primaryContactValue = "Mark Blackburn Test 2";
   const notificationMethodValue = "Email";
 
-  const companyPage = new CompanyPage(page);
-  await companyPage.visit(companyId);
-  await companyPage.clickEditCompanyDetails();
+  await app.companyPage.visit(companyId);
+  await app.companyPage.clickEditCompanyDetails();
 
-  const editCompanyPage = new EditCompanyPage(page);
-  await editCompanyPage.editCompanyDetails({
+  await app.editCompanyPage.editCompanyDetails({
     primaryContact: primaryContactValue,
     notificationMethod: notificationMethodValue,
   });
 
-  const updatedPrimaryContact = await companyPage.getPrimaryContactValue();
+  const updatedPrimaryContact = await app.companyPage.getPrimaryContactValue();
   expect(updatedPrimaryContact).toEqual(primaryContactValue);
 
-  const notificationMethod = await companyPage.getNotificationMethodValue();
+  const notificationMethod = await app.companyPage.getNotificationMethodValue();
   expect(notificationMethod).toEqual(notificationMethodValue);
 });
