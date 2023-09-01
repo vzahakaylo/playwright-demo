@@ -6,7 +6,7 @@ const companyId = "100000";
 
 test.beforeEach(async ({ app }, testInfo) => {
   await app.loginPage.visit();
-  await app.loginPage.login("*******", "*******");
+  await app.loginPage.login();
 });
 
 test("should search company", async ({ app }) => {

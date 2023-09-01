@@ -5,7 +5,7 @@ const contractId = "943972";
 
 test.beforeEach(async ({ app }) => {
   await app.loginPage.visit();
-  await app.loginPage.login("*******", "*******");
+  await app.loginPage.login();
 });
 
 test("update contract address", async ({ app }) => {
