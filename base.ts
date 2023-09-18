@@ -7,8 +7,4 @@ export const test = base.extend<{ app: App }>({
 
     await use(app);
   },
-
-  // settingsPage: async ({ page }, use) => {
-  //   await use(new SettingsPage(page));
-  // },
 });

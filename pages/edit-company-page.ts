@@ -11,7 +11,6 @@ export default class EditCompanyPage extends BasePage {
 
     await this.primaryContactInput.fill(primaryContact);
     await this.notificationMethodSelect.selectOption(notificationMethod);
-    // await this.page.getByLabel('Notification method').selectOption('Email');
     await this.saveButton.click();
     
   }
