@@ -10,14 +10,12 @@ test.beforeEach(async ({ app }) => {
 
 test("update contract address", async ({ app }) => {
   const city = "LvivCity";
-  const firstLineOfAddress = "Flat B 76 Lebanon Gardens 2";
+  const firstLineOfAddress = "Flat B 76 Lebanon Gardens 3";
   const secondLineOfAddress = "Washington 5";
 
   await app.contractPage.visit(contractId);
 
-  // TODO: add correct wait
-  await app.page.waitForTimeout(5000);
-
+  await app.contractPage.pageIsLoaded();
   await app.contractPage.clickEditContractDetails();
 
   await app.editContractAddressPage.updateContractAddress(

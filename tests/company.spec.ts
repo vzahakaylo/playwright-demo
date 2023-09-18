@@ -4,7 +4,7 @@ import { test } from "../base";
 const companyName = "company100000";
 const companyId = "100000";
 
-test.beforeEach(async ({ app }, testInfo) => {
+test.beforeEach(async ({ app }) => {
   await app.loginPage.visit();
   await app.loginPage.login();
 });
