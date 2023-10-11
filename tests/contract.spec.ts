@@ -1,71 +1,55 @@
-import { test, expect } from "@playwright/test";
-import LoginPage from "../pages/login-page";
-import ContractPage from "../pages/contract-page";
-import EditContractAddressPage from "../pages/edit-contract-address-page";
-import DataProtectionPage from "../pages/data-protection-page";
-import SearchPage from "../pages/search-page";
+import { expect } from "@playwright/test";
+import { test } from "../base";
 
 const contractId = "943972";
 
-test.beforeEach(async ({ page }) => {
-  const loginPage = new LoginPage(page);
-
-  await loginPage.visit();
-  await loginPage.login("*******", "*******");
+test.beforeEach(async ({ app }) => {
+  await app.loginPage.visit();
+  await app.loginPage.login();
 });
 
-test("update contract address", async ({ page }) => {
+test("update contract address", async ({ app }) => {
   const city = "LvivCity";
-  const firstLineOfAddress = "Flat B 76 Lebanon Gardens 2";
+  const firstLineOfAddress = "Flat B 76 Lebanon Gardens 3";
   const secondLineOfAddress = "Washington 5";
 
-  const contractPage = new ContractPage(page);
-  await contractPage.visit(contractId);
+  await app.contractPage.visit(contractId);
 
-  // TODO: add correct wait
-  await page.waitForTimeout(5000);
+  await app.contractPage.pageIsLoaded();
+  await app.contractPage.clickEditContractDetails();
 
-  await contractPage.clickEditContractDetails();
-
-  const editContractAddressPage = new EditContractAddressPage(page);
-  await editContractAddressPage.updateContractAddress(
+  await app.editContractAddressPage.updateContractAddress(
     city,
     firstLineOfAddress,
     secondLineOfAddress
   );
 
-  const contractAddressText = await contractPage.getContractAddressText();
+  const contractAddressText = await app.contractPage.getContractAddressText();
 
   expect(contractAddressText).toContain(city);
   expect(contractAddressText).toContain(firstLineOfAddress);
   expect(contractAddressText).toContain(secondLineOfAddress);
 });
 
-test("search contract", async ({ page }) => {
-  const searchPage = new SearchPage(page);
-  const contractPage = new ContractPage(page);
+test("search contract", async ({ app }) => {
+  await app.searchPage.fillSearchInput(contractId);
+  await app.searchPage.clickSearchButton();
+  await app.searchPage.openContractById(contractId);
 
-  await searchPage.fillSearchInput(contractId);
-  await searchPage.clickSearchButton();
-  await searchPage.openContractById(contractId);
-
-  const contractTitleText = await contractPage.getContractTitleText();
+  const contractTitleText = await app.contractPage.getContractTitleText();
 
   expect(contractTitleText).toContain(contractId);
 });
 
-test("pass data protection", async ({ page }) => {
-  const contractPage = new ContractPage(page);
-  const dataProtectionPage = new DataProtectionPage(page);
+test("pass data protection", async ({ app }) => {
+  await app.contractPage.visit(contractId);
+  await app.contractPage.clickStartDataProtection();
 
-  await contractPage.visit(contractId);
-  await contractPage.clickStartDataProtection();
+  await app.dataProtectionPage.selectCustomerID();
+  await app.dataProtectionPage.selectFirstLineOfAddress();
+  await app.dataProtectionPage.selectEmailAddress();
+  await app.dataProtectionPage.clickSubmitButton();
 
-  await dataProtectionPage.selectCustomerID();
-  await dataProtectionPage.selectFirstLineOfAddress();
-  await dataProtectionPage.selectEmailAddress();
-  await dataProtectionPage.clickSubmitButton();
-
-  const successMessageText = await contractPage.getSuccessToastText();
+  const successMessageText = await app.contractPage.getSuccessToastText();
   expect(successMessageText).toContain("Data protection passed");
 });
